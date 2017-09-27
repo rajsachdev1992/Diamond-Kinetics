@@ -1,4 +1,4 @@
-# DynamicKinetics coding challenge
+# Diamond Kinetics coding challenge
 
 # Assumptions for the problem:
 1. The operations can run on any of the 7 columns (including timestamp).
