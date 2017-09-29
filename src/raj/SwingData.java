@@ -9,16 +9,16 @@ import java.util.List;
  * @author Raj Sachdev
  */
 public class SwingData {
-    
+
     //timestamp, ax, ay, az, wx, wy, wz
-    private final List<Double> timestamp;
-    private final List<Double> ax;
-    private final List<Double> ay;
-    private final List<Double> az;
-    private final List<Double> wx;
-    private final List<Double> wy;
-    private final List<Double> wz;
-    
+    private final List<String> timestamp;
+    private final List<String> ax;
+    private final List<String> ay;
+    private final List<String> az;
+    private final List<String> wx;
+    private final List<String> wy;
+    private final List<String> wz;
+
     public SwingData() {
         timestamp = new LinkedList<>();
         ax = new ArrayList<>(1000);
@@ -28,8 +28,8 @@ public class SwingData {
         wy = new ArrayList<>(1000);
         wz = new ArrayList<>(1000);
     }
-    
-    public void insertEntry(double timestamp, double ax, double ay, double az, double wx, double wy, double wz) {
+
+    public void insertEntry(String timestamp, String ax, String ay, String az, String wx, String wy, String wz) {
         this.timestamp.add(timestamp);
         this.ax.add(ax);
         this.ay.add(ay);
@@ -39,31 +39,31 @@ public class SwingData {
         this.wz.add(wz);
     }
 
-    public List<Double> getTimestamp() {
+    public List<String> getTimestamp() {
         return timestamp;
     }
 
-    public List<Double> getAx() {
+    public List<String> getAx() {
         return ax;
     }
 
-    public List<Double> getAy() {
+    public List<String> getAy() {
         return ay;
     }
 
-    public List<Double> getAz() {
+    public List<String> getAz() {
         return az;
     }
 
-    public List<Double> getWx() {
+    public List<String> getWx() {
         return wx;
     }
 
-    public List<Double> getWy() {
+    public List<String> getWy() {
         return wy;
     }
 
-    public List<Double> getWz() {
+    public List<String> getWz() {
         return wz;
     }
 }
