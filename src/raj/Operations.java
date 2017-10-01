@@ -1,6 +1,6 @@
 package raj;
 
-import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +14,7 @@ public class Operations {
      * From indexBegin to indexEnd, search data for values that are higher than
      * threshold.
      *
+     * @param <T>
      * @param data
      * @param indexBegin
      * @param indexEnd
@@ -22,41 +23,15 @@ public class Operations {
      * @return Integer::first index where data has values that meet this
      * criteria for at least winLength samples
      */
-    public static int searchContinuityAboveValue(List<String> data,
-            int indexBegin, int indexEnd, String threshold, int winLength) {
+    public static <T extends Comparable<T>> int searchContinuityAboveValue(List<T> data,
+            int indexBegin, int indexEnd, T threshold, int winLength) {
 
-        //check for empty set or incorrect indexBegin or indexEnd
         if (indexEnd >= data.size()) {
             return -1;
         }
-
-        //start iteration
-        int winCount = 0;
-        int winIndex = 0;
-        int finalIndex = -1;
-        boolean computingWin = false;
-        for (int i = indexBegin; i <= indexEnd; i++) {
-            if (compareNumbers(data.get(i), threshold) > 0) {
-                if (computingWin) {
-                    winCount++;
-                } else {
-                    winIndex = i;
-                    computingWin = true;
-                    winCount++;
-                }
-
-            } else {
-                winIndex = 0;
-                winCount = 0;
-                computingWin = false;
-            }
-
-            if (winCount >= winLength) {
-                finalIndex = winIndex;
-                break;
-            }
-        }
-        return finalIndex;
+        //use a helper function to compute the index
+        return GeneralUtils.getContinuityPatternsFromData(indexBegin, indexEnd,
+                  Arrays.asList(Predicates.greaterThan(threshold)), winLength, data)[0];
     }
 
     /**
@@ -64,6 +39,7 @@ public class Operations {
      * search data for values that are higher than thresholdLo and lower than
      * thresholdHi.
      *
+     * @param <T>
      * @param data
      * @param indexBegin
      * @param indexEnd
@@ -73,41 +49,15 @@ public class Operations {
      * @return Integer:: the first index where data has values that meet this
      * criteria for at least winLength samples.
      */
-    public static int backSearchContinuityWithinRange(List<String> data, int indexBegin, int indexEnd,
-            String thresholdLo, String thresholdHi, int winLength) {
+    public static <T extends Comparable<T>> int backSearchContinuityWithinRange(List<T> data,
+            int indexBegin, int indexEnd, T thresholdLo, T thresholdHi, int winLength) {
 
-        //check for empty set or incorrect indexBegin or indexEnd
         if (indexBegin >= data.size()) {
             return -1;
         }
-
-        //start iteration
-        int winCount = 0;
-        int winIndex = 0;
-        int finalIndex = -1;
-        boolean computingWin = false;
-        for (int i = indexBegin; i >= indexEnd; i--) {
-            if (compareNumbers(data.get(i), thresholdLo) > 0 && compareNumbers(data.get(i), thresholdHi) < 0) {
-                if (computingWin) {
-                    winCount++;
-                } else {
-                    winIndex = i;
-                    computingWin = true;
-                    winCount++;
-                }
-
-            } else {
-                winIndex = 0;
-                winCount = 0;
-                computingWin = false;
-            }
-
-            if (winCount >= winLength) {
-                finalIndex = winIndex;
-                break;
-            }
-        }
-        return finalIndex;
+        //use a helper function to compute the index
+          return GeneralUtils.getContinuityPatternsFromData(indexBegin, indexEnd,
+                  Arrays.asList(Predicates.withinRange(thresholdLo, thresholdHi)), winLength, data)[0];
     }
 
     /**
@@ -115,6 +65,7 @@ public class Operations {
      * threshold1 and also search data2 for values that are higher than
      * threshold2.
      *
+     * @param <T>
      * @param data1
      * @param data2
      * @param indexBegin
@@ -125,47 +76,25 @@ public class Operations {
      * @return Integer:: Return the first index where both data1 and data2 have
      * values that meet these criteria for at least winLength samples.
      */
-    public static int searchContinuityAboveValueTwoSignals(List<String> data1, List<String> data2, int indexBegin,
-            int indexEnd, String threshold1, String threshold2, int winLength) {
+    public static <T extends Comparable<T>> int searchContinuityAboveValueTwoSignals(List<T> data1, List<T> data2,
+            int indexBegin, int indexEnd, T threshold1, T threshold2, int winLength) {
 
         //check for empty set or incorrect indexBegin or indexEnd
         if (indexEnd >= data1.size() || data1.size() != data2.size()) {
             return -1;
         }
-
-        //start iteration
-        int winCount = 0;
-        int winIndex = 0;
-        int finalIndex = -1;
-        boolean computingWin = false;
-        for (int i = indexBegin; i <= indexEnd; i++) {
-            if (compareNumbers(data1.get(i), threshold1) > 0 && compareNumbers(data2.get(i), threshold2) > 0) {
-                if (computingWin) {
-                    winCount++;
-                } else {
-                    winIndex = i;
-                    computingWin = true;
-                    winCount++;
-                }
-
-            } else {
-                winIndex = 0;
-                winCount = 0;
-                computingWin = false;
-            }
-
-            if (winCount >= winLength) {
-                finalIndex = winIndex;
-                break;
-            }
-        }
-        return finalIndex;
+        
+        return GeneralUtils.getContinuityPatternsFromData(indexBegin, indexEnd, 
+                Arrays.asList(Predicates.greaterThan(threshold1), Predicates.greaterThan(threshold2)),
+                winLength, data1, data2)[0];
+       
     }
 
     /**
      * From indexBegin to indexEnd, search data for values that are higher than
      * thresholdLo and lower than thresholdHi.
      *
+     * @param <T>
      * @param data
      * @param indexBegin
      * @param indexEnd
@@ -176,64 +105,24 @@ public class Operations {
      * and ending index of all continuous samples that meet this criteria for at
      * least winLength data points.
      */
-    public static List<int[]> searchMultiContinuityWithinRange(List<String> data, int indexBegin, int indexEnd,
-            String thresholdLo, String thresholdHi, int winLength) {
+    public static <T extends Comparable<T>> List<int[]> searchMultiContinuityWithinRange(List<T> data,
+            int indexBegin, int indexEnd, T thresholdLo, T thresholdHi, int winLength) {
         //check for empty set or incorrect indexBegin or indexEnd
         if (indexEnd >= data.size()) {
             return null;
         }
 
         List<int[]> results = new LinkedList<>();
-
-        //start iteration
-        int winCount = 0;
-        int winIndex = 0;
-        int finalStartIndex = -1;
-        int finalEndIndex = -1;
-        boolean computingWin = false;
-        for (int i = indexBegin; i <= indexEnd; i++) {
-            if (compareNumbers(data.get(i), thresholdLo) > 0 && compareNumbers(data.get(i), thresholdHi) < 0) {
-                if (computingWin) {
-                    winCount++;
-                } else {
-                    winIndex = i;
-                    computingWin = true;
-                    winCount++;
-                }
-
-                if (i == indexEnd) {
-                    int[] startEndPair = {finalStartIndex, indexEnd};
-                    results.add(startEndPair);
-                }
-
+        while(indexBegin <= indexEnd) {
+            int pair[] = GeneralUtils.getContinuityPatternsFromData(indexBegin, indexEnd,
+                  Arrays.asList(Predicates.withinRange(thresholdLo, thresholdHi)), winLength, data);
+            if(pair[0] != -1 && pair[1] != -1) {
+                indexBegin = pair[1]+1;
+                results.add(pair);
             } else {
-                if (computingWin && winCount > winLength) {
-                    finalEndIndex = finalStartIndex + winCount - 1;
-                    int[] startEndPair = {finalStartIndex, finalEndIndex};
-                    results.add(startEndPair);
-                }
-                winIndex = 0;
-                winCount = 0;
-                computingWin = false;
-            }
-
-            if (winCount == winLength) {
-                finalStartIndex = winIndex;
+                break;
             }
         }
         return results;
     }
-
-    /**
-     * Compare two numbers enclosed in Strings
-     *
-     * @param a
-     * @param b
-     * @return Integer > 0 if number in String a is greater than String b. Else
-     * returns the Integer < 0
-     */
-    private static int compareNumbers(String a, String b) {
-        return new BigDecimal(a).compareTo(new BigDecimal(b));
-    }
-
 }

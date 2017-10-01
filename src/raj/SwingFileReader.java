@@ -2,11 +2,8 @@ package raj;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,12 +25,12 @@ public class SwingFileReader {
             String tokens[];
             while ((line = br.readLine()) != null) {
                 tokens = line.split(",");
-                data.insertEntry(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]);
+                data.insertEntry(Long.parseLong(tokens[0]), Double.parseDouble(tokens[1]),
+                        Double.parseDouble(tokens[2]), Double.parseDouble(tokens[3]), Double.parseDouble(tokens[4]), 
+                                Double.parseDouble(tokens[5]), Double.parseDouble(tokens[6]));
             }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SwingFileReader.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(SwingFileReader.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception occured while reading the file"+ex);
         }
         return data;
     }
